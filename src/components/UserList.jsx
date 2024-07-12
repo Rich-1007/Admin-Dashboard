@@ -1,90 +1,83 @@
 import React, { useEffect, useState } from "react";
-import { users } from "../../public/data";
 import { useSearchParams } from "react-router-dom";
-
-const UserList = () => {
+const UserList = ({ data }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pageNum, setPageNum] = useState("1");
 
   useEffect(() => {
     setPageNum(searchParams.get("page") || "1");
-
-    // setPageSize(searchParams.get("limit") || "10");
   }, [searchParams]);
+
+  const [filteredPosts, setFilteredPosts] = useState(data);
+  useEffect(() => {
+    const slicedArr = data.slice((+pageNum - 1) * 10, +pageNum * 10);
+    console.log(slicedArr);
+    setFilteredPosts(slicedArr);
+  }, [pageNum]);
+
+  const banUser = (item) => {
+    const filteredArr = filteredPosts.map((arr) =>
+      arr.userID === item.userID ? { ...item, isBanned: !item.isBanned } : arr
+    );
+    setFilteredPosts(filteredArr);
+  };
+
+  console.log(filteredPosts);
   return (
-    <div className="w-full  flex flex-col justify-around overflow-hidden">
-      {users.slice((+pageNum - 1) * 10, +pageNum * 10).map((item) => (
-       
-       
-       
-       
-       
-       
-       
-       
-       <div
-          key={item.userID}
-          className="border-b text-xs  flex flex-row justify-between sm:text-sm border-2 w-full">
-          <div className="flex flex-row w-full gap-1 overflow-hidden  sm:text-base text-[10px]">
-           
-           
-           
-           
-           
-           
-           
-            <div className="flex justify-center w-1.5/12  ">
-              <span>{item.userID}</span>
-            </div>
+    <div>
+      <div className="relative overflow-x-auto">
+        <table className=" min-w-full overflow-hidden rounded-lg  border-collapse">
+          <thead className="">
+            <tr className="bg-gray-500 rounded-lg text-white">
+              <th scope="col" className="text-start pr-3 py-2 px-2">
+                <span>User ID</span>
+              </th>
+              <th scope="col" className="text-start pr-3 py-2">
+                <span>Username</span>
+              </th>
+              <th scope="col" className="text-start pr-3 py-2">
+                <span>Name</span>
+              </th>
+              <th scope="col" className="text-start pr-3 py-2">
+                <span>Email</span>
+              </th>
+              <th scope="col" className="text-start pr-3 py-2">
+                <span>Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="">
+            {filteredPosts &&
+              filteredPosts.map((item) => (
+                <tr
+                  className={` border-b border-gray-400 ${
+                    item?.isBanned && "text-red-500"
+                  } `}
+                  key={item?.userID}
+                >
+                  <td className={`py-1 `}>{item?.userID}</td>
 
-            <div className="flex justify-start w-2/12">
-              <span>{item.userName}</span>
-            </div>
-
-            <div className="flex justify-start w-3/12 ">
-              <span>{item.name}</span>
-            </div>
-            <div className="flex justify-start w-3/12 overflow-hidden">
-              <span>{item.email}</span>
-            </div>
-
-            <div className="flex sm:flex-row gap-2 w-1/6 sm:px-2 px-1 overflow-hidden flex-col">
-              <button className="bg-red-500 text-white sm:px-2 px-1 rounded-sm hover:bg-red-700 transition-all duration-300 ">
-                Ban
-              </button>
-              <button className="bg-green-400 sm:px-3 px-1 text-white rounded-sm hover:bg-green-600 transition-all duration-300">
-                Edit
-              </button>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </div>
-
-
-
-
-
-
-
-
-
-
-        </div>
-      ))}
+                  <td className="py-1">{item?.userName}</td>
+                  <td className="py-1">{item?.name}</td>
+                  <td className="py-1">{item?.email}</td>
+                  <td>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => banUser(item)}
+                        className="border border-black px-3 py-0.5 text-sm"
+                      >
+                        Ban
+                      </button>
+                      <button className="border border-black px-3 py-0.5 text-sm">
+                        Hide
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

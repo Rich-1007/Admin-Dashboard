@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { IoMdCheckmarkCircle } from "react-icons/io";
 import toast, { Toaster } from "react-hot-toast";
 
 const LogInPage = () => {
@@ -23,7 +22,7 @@ const LogInPage = () => {
       <div className="sm:w-full max-w-sm p-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
         <form onSubmit={(e) => SubmitHandle(e)}>
-          <div className="mb-4">
+          <div className="mb-7">
             <label htmlFor="email" className="block text-gray-700">
               Email
             </label>
